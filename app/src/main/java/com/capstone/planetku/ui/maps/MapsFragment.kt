@@ -1,17 +1,20 @@
 package com.capstone.planetku.ui.maps
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.app.ActivityCompat
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.capstone.planetku.R
-
+import com.capstone.planetku.data.WasteLocation
+import com.capstone.planetku.databinding.FragmentMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -19,122 +22,209 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.CircularBounds
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.api.net.SearchByTextRequest
+import androidx.core.net.toUri
 
 class MapsFragment : Fragment() {
 
+    private var _binding: FragmentMapsBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var mMap: GoogleMap
+    private lateinit var placesClient: PlacesClient
+    private val wasteLocations = ArrayList<WasteLocation>()
+    private var selectedLocation: WasteLocation? = null
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                getMyLocation()
+            }
+        }
 
     private val callback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
 
-        setupMap()
+        setupMapUI()
+        loadInitialData()
+        getMyLocation()
 
-        val markers = listOf(
-            LatLng(-6.122802, 106.899351) to Pair("Tempat Sampah 1", "Area Jakarta Utara"),
-            LatLng(-6.256597, 106.817287) to Pair("Tempat Sampah 2", "Area Jakarta Selatan"),
-            LatLng(-6.404243, 106.813408) to Pair("Tempat Sampah 3", "Area Depok"),
-            LatLng(-6.185777, 106.831073) to Pair("Tempat Sampah 4", "Area Jakarta Pusat")
-        )
-
-        val boundsBuilder = LatLngBounds.Builder()
-
-        for (markerData in markers) {
-            val location = markerData.first
-            val title = markerData.second.first
-            val snippet = markerData.second.second
-
-            addCustomMarker(location, title, snippet)
-
-            boundsBuilder.include(location)
+        mMap.setOnMapClickListener {
+            binding.bottomSheetDetail.visibility = View.GONE
+            selectedLocation = null
         }
-
-        val bounds = boundsBuilder.build()
-        val padding = 100
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
-
-        mMap.setOnMapClickListener { latLng ->
-            addCustomMarker(latLng, "Marker Baru", "Lat: ${latLng.latitude}, Lng: ${latLng.longitude}")
-        }
-
-        enableUserLocation()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+    ): View {
+        _binding = FragmentMapsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        setupPlaces()
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+        setupInteractions()
     }
 
-    private fun setupMap() {
-        mMap.uiSettings.isZoomGesturesEnabled = true
-        mMap.uiSettings.isTiltGesturesEnabled = true
-        mMap.uiSettings.isRotateGesturesEnabled = true
-
-        mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-            override fun getInfoWindow(marker: Marker): View? {
-                return null
+    private fun setupPlaces() {
+        try {
+            val ai = requireContext().packageManager.getApplicationInfo(requireContext().packageName, PackageManager.GET_META_DATA)
+            val apiKey = ai.metaData.getString("com.google.android.geo.API_KEY")
+            if (apiKey != null && !Places.isInitialized()) {
+                @Suppress("DEPRECATION")
+                Places.initialize(requireContext(), apiKey)
             }
+            placesClient = Places.createClient(requireContext())
+        } catch (e: Exception) {
+            Log.e("MapsFragment", "Places initialization failed", e)
+        }
+    }
 
-            override fun getInfoContents(marker: Marker): View {
-                val view = layoutInflater.inflate(R.layout.custom_info_window, null)
-                val title = view.findViewById<TextView>(R.id.title)
-                val snippet = view.findViewById<TextView>(R.id.snippet)
+    private fun setupMapUI() {
+        mMap.uiSettings.isZoomControlsEnabled = false
+        mMap.uiSettings.isMapToolbarEnabled = false
+        mMap.uiSettings.isCompassEnabled = true
+    }
 
-                title.text = marker.title
-                snippet.text = marker.snippet
-                return view
+    private fun setupInteractions() {
+        binding.btnSearchHere.setOnClickListener {
+            searchWasteLocations()
+        }
+
+        binding.btnNavigate.setOnClickListener {
+            selectedLocation?.let { loc ->
+                val gmmIntentUri =
+                    "google.navigation:q=${loc.location.latitude},${loc.location.longitude}".toUri()
+                val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+
+                if (mapIntent.resolveActivity(requireActivity().packageManager) != null) {
+                    startActivity(mapIntent)
+                } else {
+                    Toast.makeText(requireContext(), "Google Maps tidak ditemukan", Toast.LENGTH_SHORT).show()
+                }
             }
-        })
+        }
     }
 
-    private fun addCustomMarker(latLng: LatLng, title: String, snippet: String) {
-        val markerOptions = MarkerOptions()
-            .position(latLng)
-            .title(title)
-            .snippet(snippet)
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+    private fun searchWasteLocations() {
+        if (!::placesClient.isInitialized) return
+        
+        val center = mMap.cameraPosition.target
+        binding.progressBar.visibility = View.VISIBLE
+        
+        val placeFields = listOf(
+            Place.Field.ID, 
+            Place.Field.DISPLAY_NAME, 
+            Place.Field.LOCATION, 
+            Place.Field.FORMATTED_ADDRESS
+        )
+        
+        val circularBounds = CircularBounds.newInstance(center, 5000.0)
+        
+        val request = SearchByTextRequest.builder("Bank Sampah TPS", placeFields)
+            .setLocationBias(circularBounds)
+            .setMaxResultCount(15)
+            .build()
 
-        mMap.addMarker(markerOptions)
+        placesClient.searchByText(request)
+            .addOnSuccessListener { response ->
+                binding.progressBar.visibility = View.GONE
+                wasteLocations.clear()
+                mMap.clear()
+                
+                val places = response.places
+                if (places.isEmpty()) {
+                    Toast.makeText(requireContext(), "Tidak ditemukan TPS di area ini", Toast.LENGTH_SHORT).show()
+                } else {
+                    for (place in places) {
+                        val latLng = place.location ?: continue
+                        wasteLocations.add(WasteLocation(
+                            place.displayName ?: "TPS",
+                            latLng,
+                            place.formattedAddress ?: "-",
+                            "Kertas, Plastik, Logam", 
+                            "08:00 - 16:00"
+                        ))
+                    }
+                    showMarkers()
+                }
+            }
+            .addOnFailureListener { exception ->
+                binding.progressBar.visibility = View.GONE
+                Log.e("MapsFragment", "Search failed", exception)
+                Toast.makeText(requireContext(), "Gagal mencari: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    private fun enableUserLocation() {
-        if (ActivityCompat.checkSelfPermission(
+    private fun loadInitialData() {
+        wasteLocations.add(WasteLocation("Bank Sampah Induk Jakarta Utara", LatLng(-6.122802, 106.899351), "Jl. Tarian Raya Barat, Klp. Gading", "Plastik, Kertas, Logam", "08:00 - 15:00"))
+        showMarkers()
+    }
+
+    private fun showMarkers() {
+        val boundsBuilder = LatLngBounds.Builder()
+
+        for (wastePlace in wasteLocations) {
+            val marker = mMap.addMarker(
+                MarkerOptions()
+                    .position(wastePlace.location)
+                    .title(wastePlace.name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            )
+            marker?.tag = wastePlace
+            boundsBuilder.include(wastePlace.location)
+        }
+
+        mMap.setOnMarkerClickListener { marker ->
+            val data = marker.tag as? WasteLocation
+            if (data != null) {
+                showDetailSheet(data)
+                selectedLocation = data
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(data.location, 15f))
+            }
+            true
+        }
+    }
+
+    private fun showDetailSheet(data: WasteLocation) {
+        binding.apply {
+            tvPlaceName.text = data.name
+            tvPlaceAddress.text = data.address
+            tvWasteTypes.text = data.acceptedWaste
+            tvOperationalHours.text = data.operationalHours
+            bottomSheetDetail.visibility = View.VISIBLE
+        }
+    }
+
+    private fun getMyLocation() {
+        if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             mMap.isMyLocationEnabled = true
         } else {
-            requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            enableUserLocation()
-        }
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

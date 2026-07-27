@@ -1,7 +1,6 @@
 package com.capstone.planetku.ui
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
@@ -22,72 +21,39 @@ class LoginRegisterActivity : AppCompatActivity() {
         binding = ActivityLoginRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupInitialAnimations()
-        setupClickListeners()
+        setupAction()
+        playAnimation()
     }
 
-    private fun setupInitialAnimations() {
+    private fun setupAction() {
+        binding.btnLogin.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+
+        binding.btnRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
+
+    private fun playAnimation() {
+        binding.ivIllustration.alpha = 0f
+        binding.tvTitle.alpha = 0f
+        binding.tvSubtitle.alpha = 0f
         binding.btnLogin.alpha = 0f
         binding.btnRegister.alpha = 0f
-        binding.btnLogin.translationY = 50f
-        binding.btnRegister.translationY = 50f
 
-        ObjectAnimator.ofFloat(binding.btnLogin, "alpha", 0f, 1f).apply {
-            duration = 500
+        val illustration = ObjectAnimator.ofFloat(binding.ivIllustration, View.ALPHA, 1f).setDuration(500)
+        val title = ObjectAnimator.ofFloat(binding.tvTitle, View.ALPHA, 1f).setDuration(500)
+        val subtitle = ObjectAnimator.ofFloat(binding.tvSubtitle, View.ALPHA, 1f).setDuration(500)
+        val loginBtn = ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1f).setDuration(500)
+        val registerBtn = ObjectAnimator.ofFloat(binding.btnRegister, View.ALPHA, 1f).setDuration(500)
+
+        AnimatorSet().apply {
+            play(illustration).before(title)
+            play(title).with(subtitle)
+            play(loginBtn).after(subtitle)
+            play(registerBtn).after(loginBtn)
             start()
         }
-        ObjectAnimator.ofFloat(binding.btnLogin, "translationY", 50f, 0f).apply {
-            duration = 500
-            start()
-        }
-
-        ObjectAnimator.ofFloat(binding.btnRegister, "alpha", 0f, 1f).apply {
-            startDelay = 100
-            duration = 500
-            start()
-        }
-        ObjectAnimator.ofFloat(binding.btnRegister, "translationY", 50f, 0f).apply {
-            startDelay = 100
-            duration = 500
-            start()
-        }
-    }
-
-    private fun setupClickListeners() {
-        binding.btnLogin.setOnClickListener { view ->
-            playClickAnimation(view) {
-                getSharedPreferences("AppPreferences", MODE_PRIVATE)
-                    .edit()
-                    .putBoolean("IS_FIRST_LAUNCH", false)
-                    .apply()
-
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-        binding.btnRegister.setOnClickListener { view ->
-            playClickAnimation(view) {
-                val intent = Intent(this, RegisterActivity::class.java)
-                startActivity(intent)
-            }
-        }
-    }
-
-    private fun playClickAnimation(view: View, onAnimationEnd: () -> Unit) {
-        val scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0.95f, 1.05f, 1f)
-        val scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0.95f, 1.05f, 1f)
-
-        scaleX.duration = 300
-        scaleY.duration = 300
-
-        scaleX.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                onAnimationEnd.invoke()
-            }
-        })
-
-        scaleX.start()
-        scaleY.start()
     }
 }

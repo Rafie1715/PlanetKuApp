@@ -1,53 +1,44 @@
 package com.capstone.planetku.data
 
 import android.util.Log
-import com.capstone.planetku.api.ApiClient
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ArticleRepository {
-    private val articleService = ApiClient.articleService
+    private val firestore = FirebaseFirestore.getInstance()
+    private val _articles = MutableLiveData<List<Article>?>()
+    val articles: LiveData<List<Article>?> = _articles
 
-    suspend fun getArticles(): Result<List<DataItem>> {
-        return try {
-            val response = articleService.getArticles()
-            if (response.isSuccessful) {
-                val articles = response.body()?.data ?: emptyList()
-                Result.success(articles.filterNotNull())
-            } else {
-                Result.failure(Exception("Failed to fetch articles"))
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
+
+    fun fetchArticles() {
+        _isLoading.value = true
+
+        firestore.collection("articles")
+            .get()
+            .addOnSuccessListener { result ->
+                _isLoading.value = false
+                val articleList = result.toObjects(Article::class.java)
+                
+                val needsUpdate = articleList.size < 10 || (articleList[0].content.isEmpty())
+                
+                if (needsUpdate) {
+                    FirestoreSeeder.seedArticles { success ->
+                        if (success) fetchArticles()
+                    }
+                } else {
+                    _articles.value = articleList
+                }
             }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    suspend fun getArticleBySlugFromAll(slug: String): Result<DataItem> {
-        return try {
-            val articlesResult = getArticles()
-            val articles = articlesResult.getOrNull()
-
-            val article = articles?.find { it.slug == slug }
-            if (article != null) {
-                Result.success(article)
-            } else {
-                Result.failure(Exception("Article with slug '$slug' not found"))
+            .addOnFailureListener { exception ->
+                _isLoading.value = false
+                _error.value = "Gagal memuat berita: ${exception.message}"
+                Log.e("ArticleRepo", "Error getting documents: ", exception)
             }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
     }
-
-    suspend fun getLatestArticles(): Result<List<DataItem>> {
-        return try {
-            val response = articleService.getLatestArticles()
-            if (response.isSuccessful) {
-                val articles = response.body()?.data ?: emptyList()
-                Result.success(articles.filterNotNull())
-            } else {
-                Result.failure(Exception("Failed to fetch latest articles"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
 }

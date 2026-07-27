@@ -34,12 +34,12 @@
     <string name="user_name">User</string>
     <string name="tentang_aplikasi">Tentang Aplikasi</string>
     <string name="profil">Profil</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="settings">Settings</string>
     <string name="profile">Profile</string>
     <string name="prediksi_harga">Prediksi Harga Sampah</string>
     <string name="desc_prediksi_harga">Ubah sampah menjadi sumber penghasilan! Temukan harga perkiraan sampah Anda dan mulai langkah kecil untuk keberlanjutan lingkungan.</string>
-    <string name="prediksi">Prediksi</string>
+    <string name="prediksi">Prediksi Harga</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="profile_picture">Profile Picture</string>
     <string name="full_name">Full Name</string>
@@ -54,14 +54,22 @@
     <string name="nomor_telepon">Nomor Telepon</string>
     <string name="simpan_profil">Simpan Profil</string>
     <string name="kategori_emisi_karbon">Kategori Emisi Karbon</string>
-    <string name="tambah_aktivitas_baru">Tambah Aktivitas Baru</string>
+
     <string name="kategori">Kategori</string>
     <string name="prediksi_harga_sampah">Prediksi Harga Sampah</string>
     <string name="jenis_sampah">Jenis Sampah</string>
-    <string name="berat_sampah">Berat Sampah (kg)</string>
-    <string name="masukkan_berat_dalam_kg">Masukkan berat dalam kg</string>
+    <string name="berat_sampah">Berat Sampah (gram)</string>
+    <string name="masukkan_berat_dalam_gram">Masukkan berat dalam gram</string>
+    <string name="kondisi_sampah">Kondisi Sampah</string>
+    <string name="lokasi">Lokasi</string>
     <string name="hasil_prediksi_akan_muncul_di_sini">Hasil prediksi akan muncul di sini</string>
     <string name="hitung_estimasi_harga">Hitung Estimasi Harga</string>
+    <string name="kondisi_baik">Baik</string>
+    <string name="kondisi_sedang">Sedang</string>
+    <string name="kondisi_buruk">Buruk</string>
+    <string name="lokasi_bandung">Bandung</string>
+    <string name="lokasi_jakarta">Jakarta</string>
+    <string name="lokasi_surabaya">Surabaya</string>
     <string name="about_app">Tentang Aplikasi</string>
     <string name="about_app_description">PlanetKu adalah aplikasi inovatif yang dirancang untuk mendukung keberlanjutan lingkungan melalui solusi manajemen sampah yang cerdas.
     Aplikasi ini mempermudah pengguna dalam memilah jenis sampah, memprediksi harga sampah, serta mengurangi jejak karbon dengan menyediakan
@@ -86,10 +94,9 @@
     <string name="about_app_icon">tentang aplikasi\n</string>
     <string name="logout_icon">logout\n</string>
 
-<!--    Baru-->
     <string name="powered">Powered By </string>
     <string name="planetku_team">Planetku Team</string>
-    <string name="welcome_login">Buat profil untuk login ke PlanetKu dan jaga planet kita.</string>
+    <string name="welcome_login">Buat profil untuk login ke PlanetKu and jaga planet kita.</string>
     <string name="title_login_btn">Login</string>
     <string name="register_title">Registrasikan Akun Kamu!</string>
     <string name="camera">camera\n</string>
@@ -97,6 +104,60 @@
     <string name="snippet">Snippet</string>
     <string name="article_image">Gambar Artikel\n</string>
     <string name="hi_user">Hi, User👋</string>
-    <string name="category_name">Category Name</string>
-    <string name="total_emission_e_g_120_kg_co2">Total Emission (e.g., 120 kg CO2)</string>
+
+    <string name="ilustrasi_login">Ilustrasi Login</string>
+    <string name="ayo_bergabung">Ayo Bergabung!</string>
+    <string name="jaga_bumi_kita_dengan_pengelolaan_sampah_yang_lebih_bijak_bersama_planetku">Jaga bumi kita dengan pengelolaan sampah yang lebih bijak bersama PlanetKu.</string>
+    <string name="masuk">Masuk</string>
+    <string name="daftar_akun">Daftar Akun</string>
+    <string name="login_illustration">Login Illustration</string>
+    <string name="selamat_datang_kembali">Selamat Datang Kembali!</string>
+    <string name="masuk_untuk_melanjutkan">Masuk untuk melanjutkan</string>
+    <string name="email">Email</string>
+    <string name="masukkan_email_anda">Masukkan email Anda</string>
+    <string name="password">Password</string>
+    <string name="masukkan_password_anda">Masukkan password Anda</string>
+    <string name="ilustrasi_register">Ilustrasi Register</string>
+    <string name="buat_akun_baru">Buat Akun Baru</string>
+    <string name="lengkapi_data_diri_anda">Lengkapi data diri Anda</string>
+    <string name="masukkan_nama_lengkap">Masukkan nama lengkap</string>
+    <string name="daftar">Daftar</string>
+    <string name="halo_sobat_planetku">Halo, Sobat PlanetKu!</string>
+    <string name="mari_jaga_bumi_kita_hari_ini">Mari jaga bumi kita hari ini.</string>
+    <string name="kontribusi_anda">Kontribusi Anda</string>
+    <string name="fitur_utama">Fitur Utama</string>
+    <string name="scan_sampah">Scan Sampah</string>
+    <string name="cek_emisi">Cek Emisi</string>
+    <string name="edukasi_amp_berita"><![CDATA[Edukasi & Berita]]></string>
+    <string name="ini_adalah_ringkasan_singkat_dari_artikel_yang_akan_ditampilkan_di_sini">Ini adalah ringkasan singkat dari artikel yang akan ditampilkan di sini...</string>
+    <string name="gagal_memuat_artikel">Gagal memuat artikel</string>
+    <string name="foto_profil">Foto Profil</string>
+    <string name="kembali">Kembali</string>
+    <string name="logo_planetku">Logo PlanetKu</string>
+    <string name="versi_1_0_0">Versi 1.0.0</string>
+    <string name="planetku_adalah_aplikasi_peduli_lingkungan_yang_membantu_anda_mengelola_sampah_dengan_lebih_bijak_gunakan_fitur_klasifikasi_sampah_berbasis_ai_dan_cek_emisi_karbon_harian_anda_untuk_bumi_yang_lebih_hijau">PlanetKu adalah aplikasi peduli lingkungan yang membantu Anda mengelola sampah dengan lebih bijak. Gunakan fitur klasifikasi sampah berbasis AI and cek emisi karbon harian Anda untuk bumi yang lebih hijau.</string>
+    <string name="tim_pengembang">Tim Pengembang</string>
+    <string name="_2024_planetku_team_all_rights_reserved">© 2024 PlanetKu Team. All rights reserved.</string>
+    <string name="ferdiyansyah_machine_learning">• Ferdiyansyah (Machine Learning)</string>
+    <string name="bagus_tri_handoko_machine_learning">• Bagus Tri Handoko (Machine Learning)</string>
+    <string name="elvino_junior_machine_learning">• Elvino Junior (Machine Learning)</string>
+    <string name="karina_erlayas_cloud_computing">• Karina Erlayas (Cloud Computing)</string>
+    <string name="muhammad_fazza_ihza_cloud_computing">• Muhammad Fazza Ihza (Cloud Computing)</string>
+    <string name="david_eri_nugroho_mobile_dev">• David Eri Nugroho (Mobile Dev)</string>
+    <string name="rafie_rojagat_bachri_mobile_dev">• Rafie Rojagat Bachri (Mobile Dev)</string>
+    <string name="keluar">Keluar</string>
+    <string name="edit_profil">Edit Profil</string>
+    <string name="member">Member</string>
+    <string name="user_email_com">user@email.com</string>
+    <string name="nama_pengguna">Nama Pengguna</string>
+    <string name="profil_saya">Profil Saya</string>
+    <string name="jelajahi_artikel">Jelajahi Artikel</string>
+
+    <string name="sampah_terpilah">Sampah Terpilah</string>
+    <string name="karbon_dihemat">Karbon Dihemat</string>
+    <string name="peta_lokasi">Peta Lokasi</string>
+    <string name="peta">Peta</string>
+    <string name="artikel">Artikel</string>
+    <string name="beranda">Beranda</string>
+    <string name="default_web_client_id">300599379757-qhld6r25sg82isbpdujuj50s881qs7qh.apps.googleusercontent.com</string>
 </resources>

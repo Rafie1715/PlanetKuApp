@@ -9,13 +9,24 @@
         android:id="@+id/navigation_home"
         android:name="com.capstone.planetku.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home">
-    </fragment>
+        tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/moreFragment"
-        android:name="com.capstone.planetku.ui.more.MoreFragment"
-        android:label="More"
-        tools:layout="@layout/fragment_more" />
+        android:id="@+id/navigation_article"
+        android:name="com.capstone.planetku.ui.article.ArticleFragment"
+        android:label="Artikel"
+        tools:layout="@layout/fragment_article" />
+
+    <fragment
+        android:id="@+id/navigation_maps"
+        android:name="com.capstone.planetku.ui.maps.MapsFragment"
+        android:label="Peta"
+        tools:layout="@layout/fragment_maps" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.capstone.planetku.ui.profile.ProfileFragment"
+        android:label="Profil"
+        tools:layout="@layout/fragment_profile" />
 
 </navigation>

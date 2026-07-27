@@ -1,16 +1,15 @@
 package com.capstone.planetku.ui.welcome
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.capstone.planetku.MainActivity
 import com.capstone.planetku.databinding.ActivityWelcomeBinding
 import com.capstone.planetku.ui.LoginRegisterActivity
-import com.capstone.planetku.ui.login.LoginActivity
+import androidx.core.content.edit
 
 class WelcomeActivity : AppCompatActivity() {
 
@@ -20,23 +19,24 @@ class WelcomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
-        binding = ActivityWelcomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val sharedPreferences = getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE)
         val isFirstLaunch = sharedPreferences.getBoolean("IS_FIRST_LAUNCH", true)
 
-        if (isFirstLaunch) {
-            val editor = sharedPreferences.edit()
-            editor.putBoolean("IS_FIRST_LAUNCH", false)
-            editor.apply()
-        } else {
+        if (!isFirstLaunch) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
+            return
         }
 
-        playWelcomeAnimations()
+        binding = ActivityWelcomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        sharedPreferences.edit {
+            putBoolean("IS_FIRST_LAUNCH", false)
+        }
+
+        setupAnimations()
 
         binding.btnStarted.setOnClickListener {
             val intent = Intent(this, LoginRegisterActivity::class.java)
@@ -44,17 +44,36 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun playWelcomeAnimations() {
-        val scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 1.2f, 1.0f)
-        val scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f, 1.2f, 1.0f)
-        val alpha = PropertyValuesHolder.ofFloat("alpha", 0f, 1f)
+    private fun setupAnimations() {
+        binding.appLogoWelcome.alpha = 0f
+        binding.tvWelcomeSelamat.alpha = 0f
+        binding.tvWelcomeTitle.alpha = 0f
+        binding.tvAppDescription.alpha = 0f
+        binding.btnStarted.alpha = 0f
+        binding.layoutFooter.alpha = 0f
 
-        val buttonAnimator = ObjectAnimator.ofPropertyValuesHolder(binding.btnStarted, scaleX, scaleY, alpha)
-        buttonAnimator.duration = 1000
-        buttonAnimator.start()
+        val logoFade = ObjectAnimator.ofFloat(binding.appLogoWelcome, View.ALPHA, 1f).setDuration(500)
 
-        val textAlphaAnimator = ObjectAnimator.ofFloat(binding.tvWelcomeSelamat, "alpha", 0f, 1f)
-        textAlphaAnimator.duration = 1500
-        textAlphaAnimator.start()
+        val titleFade = ObjectAnimator.ofFloat(binding.tvWelcomeSelamat, View.ALPHA, 1f).setDuration(500)
+        val titleSlide = ObjectAnimator.ofFloat(binding.tvWelcomeSelamat, View.TRANSLATION_Y, 50f, 0f).setDuration(500)
+
+        val subTitleFade = ObjectAnimator.ofFloat(binding.tvWelcomeTitle, View.ALPHA, 1f).setDuration(500)
+
+        val descFade = ObjectAnimator.ofFloat(binding.tvAppDescription, View.ALPHA, 1f).setDuration(500)
+
+        val btnFade = ObjectAnimator.ofFloat(binding.btnStarted, View.ALPHA, 1f).setDuration(500)
+        val btnSlide = ObjectAnimator.ofFloat(binding.btnStarted, View.TRANSLATION_Y, 50f, 0f).setDuration(500)
+
+        val footerFade = ObjectAnimator.ofFloat(binding.layoutFooter, View.ALPHA, 1f).setDuration(500)
+
+        AnimatorSet().apply {
+            play(logoFade)
+            play(titleFade).with(titleSlide).after(logoFade)
+            play(subTitleFade).after(titleFade)
+            play(descFade).after(subTitleFade)
+            play(btnFade).with(btnSlide).after(descFade)
+            play(footerFade).after(btnFade)
+            start()
+        }
     }
 }

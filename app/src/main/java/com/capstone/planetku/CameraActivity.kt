@@ -1,8 +1,6 @@
 package com.capstone.planetku
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +26,7 @@ class CameraActivity : AppCompatActivity() {
 
         previewView = findViewById(R.id.previewView)
         btnCapture = findViewById(R.id.btnCapture)
+        val btnBack: android.widget.ImageButton = findViewById(R.id.btnBack)
 
         startCamera()
 
@@ -35,6 +34,9 @@ class CameraActivity : AppCompatActivity() {
             takePhoto()
         }
 
+        btnBack.setOnClickListener {
+            finish()
+        }
     }
 
     private fun startCamera() {
@@ -58,7 +60,7 @@ class CameraActivity : AppCompatActivity() {
                 cameraProvider.bindToLifecycle(
                     this, cameraSelector, preview, imageCapture
                 )
-            } catch (exc: Exception) {
+            } catch (_: Exception) {
                 Toast.makeText(this, "Gagal membuka kamera", Toast.LENGTH_SHORT).show()
             }
 
@@ -80,12 +82,10 @@ class CameraActivity : AppCompatActivity() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-
                     val resultIntent = Intent().apply {
-                        putExtra("IMAGE_URI", savedUri.toString())
+                        putExtra("PHOTO_PATH", photoFile.absolutePath)
                     }
-                    setResult(Activity.RESULT_OK, resultIntent)
+                    setResult(RESULT_OK, resultIntent)
                     finish()
                 }
 
@@ -96,4 +96,3 @@ class CameraActivity : AppCompatActivity() {
         )
     }
 }
-

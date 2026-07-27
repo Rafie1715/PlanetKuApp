@@ -1,29 +1,30 @@
 package com.capstone.planetku.ui.article
 
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.planetku.data.Article
 import com.capstone.planetku.databinding.FragmentArticleBinding
 
 class ArticleFragment : Fragment() {
+
     private var _binding: FragmentArticleBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: ArticleViewModel by viewModels()
-    private lateinit var articleAdapter: ArticleAdapter
+    private val articleViewModel: ArticleViewModel by viewModels()
+    private lateinit var adapter: ArticleAdapter
+
+    private var originalList: List<Article> = listOf()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentArticleBinding.inflate(inflater, container, false)
@@ -34,86 +35,83 @@ class ArticleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        setupObservers()
-        playInitialAnimations()
+        setupSearchView()
+        setupSwipeRefresh()
+        observeViewModel()
 
-        viewModel.fetchArticles()
-        viewModel.fetchLatestArticles()
+        articleViewModel.fetchArticles()
     }
 
     private fun setupRecyclerView() {
-        articleAdapter = ArticleAdapter { article ->
-            startActivity(Intent(requireContext(), DetailArticleActivity::class.java).apply {
-                putExtra(DetailArticleActivity.EXTRA_SLUG, article.slug)
-            })
+        adapter = ArticleAdapter(isHorizontal = false) { article ->
+            val intent = Intent(requireContext(), DetailArticleActivity::class.java)
+            intent.putExtra("EXTRA_ARTICLE", article)
+            startActivity(intent)
         }
 
-        binding.rvArticles.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = articleAdapter
-            addItemDecoration(
-                DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-            )
+        binding.rvArticles.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvArticles.adapter = adapter
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (!query.isNullOrEmpty()) {
+                    filterList(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterList(newText)
+                return true
+            }
+        })
+    }
+
+    private fun filterList(query: String?) {
+        if (query.isNullOrEmpty()) {
+            adapter.submitList(originalList)
+        } else {
+            val filteredList = originalList.filter { item ->
+                item.title.contains(query, ignoreCase = true) || item.description.contains(query, ignoreCase = true)
+            }
+            adapter.submitList(filteredList)
         }
     }
 
-    private fun setupObservers() {
-        viewModel.articles.observe(viewLifecycleOwner) { articles ->
-            binding.progressBar.visibility = View.GONE
-            articleAdapter.submitList(articles)
-            playRecyclerViewAnimation()
+    private fun setupSwipeRefresh() {
+        binding.swipeRefresh.setOnRefreshListener {
+            articleViewModel.fetchArticles()
         }
+    }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) {
-                binding.progressBar.visibility = View.VISIBLE
-                playProgressBarAnimation()
+    private fun observeViewModel() {
+        articleViewModel.articles.observe(viewLifecycleOwner) { articleList ->
+            if (!articleList.isNullOrEmpty()) {
+                originalList = articleList
+                adapter.submitList(articleList)
+                binding.tvError.visibility = View.GONE
             } else {
-                binding.progressBar.visibility = View.GONE
-            }
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            errorMessage?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-            }
-        }
-
-        viewModel.latestArticles.observe(viewLifecycleOwner) { result ->
-            when {
-                result.isSuccess -> {
-                    val articles = result.getOrNull()
-                    articles?.let {
-                        Log.d("LatestArticles", "Latest articles: $articles")
-                    }
+                if (articleList != null) {
+                    Toast.makeText(requireContext(), "Tidak ada artikel ditemukan", Toast.LENGTH_SHORT).show()
                 }
-                result.isFailure -> {
-                    val error = result.exceptionOrNull()?.message
-                    Toast.makeText(requireContext(), "Error fetching latest articles: $error", Toast.LENGTH_SHORT).show()
-                }
+                binding.tvError.visibility = View.VISIBLE
+                adapter.submitList(emptyList())
             }
         }
-    }
 
-    private fun playRecyclerViewAnimation() {
-        ObjectAnimator.ofFloat(binding.rvArticles, "alpha", 0f, 1f).apply {
-            duration = 1000
-            start()
+        articleViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (!binding.swipeRefresh.isRefreshing) {
+                binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            }
+            if (!isLoading) binding.swipeRefresh.isRefreshing = false
         }
-    }
 
-    private fun playProgressBarAnimation() {
-        ObjectAnimator.ofFloat(binding.progressBar, "scaleX", 1f, 1.5f, 1f).apply {
-            duration = 500
-            repeatCount = ObjectAnimator.INFINITE
-            start()
-        }
-    }
-
-    private fun playInitialAnimations() {
-        ObjectAnimator.ofFloat(binding.rvArticles, "alpha", 0f).apply {
-            duration = 0
-            start()
+        articleViewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            if (errorMessage != null) {
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

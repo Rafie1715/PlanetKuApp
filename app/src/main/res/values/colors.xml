@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+    <color name="primary">#2D6A4F</color>
+    <color name="primaryContainer">#D8F3DC</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="secondary">#40916C</color>
+    <color name="secondaryContainer">#B7E4C7</color>
+    <color name="tertiary">#52B788</color>
+    <color name="surface">#F8FAF8</color>
+    <color name="onSurface">#1B4332</color>
+    <color name="surfaceVariant">#E9F5EA</color>
+    <color name="outline">#748E81</color>
+
+    <color name="green_light">#74C69D</color>
+    <color name="green_dark">#1B4332</color>
+    <color name="error">#BA1A1A</color>
+    <color name="warning">#F57C00</color>
+    <color name="success">#388E3C</color>
+    <color name="black">#1A1C19</color>
     <color name="white">#FFFFFF</color>
-    <color name="light_green">#0dd92c</color>
-    <color name="dark_grey">#292929</color>
-    <color name="form_green">#CAF6CF</color>
-    <color name="gray">#757575</color>
+    <color name="gray_light">#F1F3F1</color>
+    <color name="gray_medium">#C4C7C3</color>
+
+    <color name="light_green">#74C69D</color>
+    <color name="gray">#C4C7C3</color>
 </resources>

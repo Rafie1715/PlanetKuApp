@@ -1,98 +1,158 @@
 package com.capstone.planetku.ui.register
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.capstone.planetku.R
-import com.capstone.planetku.api.ApiClient
-import com.capstone.planetku.data.AuthResponse
-import com.capstone.planetku.data.RegisterRequest
 import com.capstone.planetku.databinding.ActivityRegisterBinding
 import com.capstone.planetku.ui.login.LoginActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         supportActionBar?.hide()
 
-        playRegisterAnimations()
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        binding.btnRegister.setOnClickListener {
-            val name = binding.etName.text.toString().trim()
-            val username = binding.etUsername.text.toString().trim()
-            val password = binding.etPassword.text.toString().trim()
+        auth = FirebaseAuth.getInstance()
 
-            when {
-                name.isEmpty() -> {
-                    binding.etName.error = getString(R.string.name_required)
-                }
-                username.isEmpty() -> {
-                    binding.etUsername.error = getString(R.string.email_required)
-                }
-                password.isEmpty() -> {
-                    binding.etPassword.error = getString(R.string.password_required)
-                }
-                else -> {
-                    registerUser(username, name, password)
+        playRegisterAnimation()
+        setupAction()
+    }
 
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
+    private fun setupAction() {
+        binding.registerButton.setOnClickListener {
+            val name = binding.edRegisterName.text.toString().trim()
+            val email = binding.edRegisterEmail.text.toString().trim()
+            val password = binding.edRegisterPassword.text.toString().trim()
+
+            if (validateInput(name, email, password)) {
+                performRegister(name, email, password)
             }
         }
     }
 
-    private fun registerUser(username: String, name: String, password: String) {
-        val registerRequest = RegisterRequest(username, name, password)
+    private fun validateInput(name: String, email: String, password: String): Boolean {
+        var isValid = true
 
-        ApiClient.mainService.registerUser(registerRequest).enqueue(object :
-            Callback<AuthResponse> {
-            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                if (response.isSuccessful) {
-                    val registerResponse = response.body()
-                    Toast.makeText(this@RegisterActivity, registerResponse?.message, Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(this@RegisterActivity, "Registration failed", Toast.LENGTH_SHORT).show()
-                }
-            }
+        if (name.isEmpty()) {
+            binding.nameEditTextLayout.error = "Nama tidak boleh kosong"
+            isValid = false
+        } else {
+            binding.nameEditTextLayout.error = null
+        }
 
-            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                Toast.makeText(this@RegisterActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+        if (email.isEmpty()) {
+            binding.emailEditTextLayout.error = "Email tidak boleh kosong"
+            isValid = false
+        } else {
+            binding.emailEditTextLayout.error = null
+        }
+
+        if (password.isEmpty()) {
+            binding.passwordEditTextLayout.error = "Password tidak boleh kosong"
+            isValid = false
+        } else if (password.length < 6) {
+            binding.passwordEditTextLayout.error = "Password minimal 6 karakter"
+            isValid = false
+        } else {
+            binding.passwordEditTextLayout.error = null
+        }
+
+        return isValid
     }
 
-    private fun playRegisterAnimations() {
-        val scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 1.1f, 1.0f)
-        val scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f, 1.1f, 1.0f)
-        val alpha = PropertyValuesHolder.ofFloat("alpha", 0f, 1f)
+    private fun performRegister(name: String, email: String, password: String) {
+        showLoading(true)
 
-        val buttonAnimator = ObjectAnimator.ofPropertyValuesHolder(binding.btnRegister, scaleX, scaleY, alpha)
-        buttonAnimator.duration = 1000
-        buttonAnimator.start()
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    val profileUpdates = UserProfileChangeRequest.Builder()
+                        .setDisplayName(name)
+                        .build()
 
-        val nameAlphaAnimator = ObjectAnimator.ofFloat(binding.etName, "alpha", 0f, 1f)
-        nameAlphaAnimator.duration = 1200
-        nameAlphaAnimator.start()
+                    user?.updateProfile(profileUpdates)
+                        ?.addOnCompleteListener { updateTask ->
+                            showLoading(false)
+                            if (updateTask.isSuccessful) {
+                                Toast.makeText(this, "Registrasi Berhasil! Silakan Login.", Toast.LENGTH_LONG).show()
 
-        val usernameAlphaAnimator = ObjectAnimator.ofFloat(binding.etUsername, "alpha", 0f, 1f)
-        usernameAlphaAnimator.duration = 1400
-        usernameAlphaAnimator.start()
+                                auth.signOut()
 
-        val passwordAlphaAnimator = ObjectAnimator.ofFloat(binding.etPassword, "alpha", 0f, 1f)
-        passwordAlphaAnimator.duration = 1600
-        passwordAlphaAnimator.start()
+                                val intent = Intent(this, LoginActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                } else {
+                    showLoading(false)
+                    Toast.makeText(this, "Gagal: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.registerButton.isEnabled = false
+            binding.registerButton.text = "Loading..."
+        } else {
+            binding.progressBar.visibility = View.GONE
+            binding.registerButton.isEnabled = true
+            binding.registerButton.text = "Daftar"
+        }
+    }
+
+    private fun playRegisterAnimation() {
+        val views = listOf(
+            binding.ivRegisterIllustration,
+            binding.tvRegisterTitle,
+            binding.tvRegisterSubtitle,
+            binding.tvNameLabel,
+            binding.nameEditTextLayout,
+            binding.tvEmailLabel,
+            binding.emailEditTextLayout,
+            binding.tvPasswordLabel,
+            binding.passwordEditTextLayout,
+            binding.registerButton
+        )
+        views.forEach { it.alpha = 0f }
+
+        val illustration = ObjectAnimator.ofFloat(binding.ivRegisterIllustration, View.ALPHA, 1f).setDuration(500)
+        val title = ObjectAnimator.ofFloat(binding.tvRegisterTitle, View.ALPHA, 1f).setDuration(500)
+        val subtitle = ObjectAnimator.ofFloat(binding.tvRegisterSubtitle, View.ALPHA, 1f).setDuration(500)
+        val nameL = ObjectAnimator.ofFloat(binding.tvNameLabel, View.ALPHA, 1f).setDuration(500)
+        val nameI = ObjectAnimator.ofFloat(binding.nameEditTextLayout, View.ALPHA, 1f).setDuration(500)
+        val emailL = ObjectAnimator.ofFloat(binding.tvEmailLabel, View.ALPHA, 1f).setDuration(500)
+        val emailI = ObjectAnimator.ofFloat(binding.emailEditTextLayout, View.ALPHA, 1f).setDuration(500)
+        val passL = ObjectAnimator.ofFloat(binding.tvPasswordLabel, View.ALPHA, 1f).setDuration(500)
+        val passI = ObjectAnimator.ofFloat(binding.passwordEditTextLayout, View.ALPHA, 1f).setDuration(500)
+        val btn = ObjectAnimator.ofFloat(binding.registerButton, View.ALPHA, 1f).setDuration(500)
+
+        AnimatorSet().apply {
+            play(illustration).before(title)
+            play(title).with(subtitle)
+            play(nameL).after(subtitle)
+            play(nameI).after(nameL)
+            play(emailL).after(nameI)
+            play(emailI).after(emailL)
+            play(passL).after(emailI)
+            play(passI).after(passL)
+            play(btn).after(passI)
+            start()
+        }
     }
 }
