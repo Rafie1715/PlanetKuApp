@@ -183,7 +183,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Estimasi Harga"
+                android:text="@string/estimasi_harga"
                 android:textColor="@color/outline"
                 android:textSize="14sp" />
 
@@ -191,7 +191,7 @@
                 android:id="@+id/tvPredictionResult"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp 0"
+                android:text="@string/rp_0"
                 android:textColor="@color/primary"
                 android:textSize="28sp"
                 android:textStyle="bold"

@@ -103,7 +103,7 @@
                             android:id="@+id/tvTotalWaste"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
+                            android:text="@string/_0"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             android:textColor="@color/primary"/>
@@ -131,7 +131,7 @@
                             android:id="@+id/tvSavedCarbon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0.0 kg"
+                            android:text="@string/_0_0_kg"
                             android:textSize="24sp"
                             android:textStyle="bold"
                             android:textColor="@color/primary"/>

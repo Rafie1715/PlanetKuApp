@@ -129,7 +129,7 @@
     <string name="scan_sampah">Scan Sampah</string>
     <string name="cek_emisi">Cek Emisi</string>
     <string name="edukasi_amp_berita"><![CDATA[Edukasi & Berita]]></string>
-    <string name="ini_adalah_ringkasan_singkat_dari_artikel_yang_akan_ditampilkan_di_sini">Ini adalah ringkasan singkat dari artikel yang akan ditampilkan di sini...</string>
+    <string name="ini_adalah_ringkasan_singkat_dari_artikel_yang_akan_ditampilkan_di_sini">Ini adalah ringkasan singkat dari artikel yang akan ditampilkan di sini…</string>
     <string name="gagal_memuat_artikel">Gagal memuat artikel</string>
     <string name="foto_profil">Foto Profil</string>
     <string name="kembali">Kembali</string>
@@ -152,6 +152,9 @@
     <string name="nama_pengguna">Nama Pengguna</string>
     <string name="profil_saya">Profil Saya</string>
     <string name="jelajahi_artikel">Jelajahi Artikel</string>
+    <string name="simpan_perubahan">Simpan Perubahan</string>
+    <string name="ubah_foto">Ubah Foto</string>
+    <string name="nama_baru">Nama Baru</string>
 
     <string name="sampah_terpilah">Sampah Terpilah</string>
     <string name="karbon_dihemat">Karbon Dihemat</string>
@@ -160,4 +163,38 @@
     <string name="artikel">Artikel</string>
     <string name="beranda">Beranda</string>
     <string name="default_web_client_id">300599379757-qhld6r25sg82isbpdujuj50s881qs7qh.apps.googleusercontent.com</string>
+    <string name="posisikan_sampah_di_dalam_kotak">Posisikan sampah di dalam kotak</string>
+    <string name="hitung_emisi">Hitung Emisi</string>
+    <string name="sampah_anorganik_kg">Sampah Anorganik (kg)</string>
+    <string name="sampah_organik_kg">Sampah Organik (kg)</string>
+    <string name="jarak_transportasi_km">Jarak Transportasi (km)</string>
+    <string name="input_aktivitas">Input Aktivitas</string>
+    <string name="penggunaan_listrik_kwh">Penggunaan Listrik (kWh)</string>
+    <string name="judul_artikel">Judul Artikel</string>
+    <string name="_20_maret_2024">20 Maret 2024</string>
+    <string name="isi_artikel_akan_muncul_di_sini">Isi artikel akan muncul di sini…</string>
+    <string name="lihat_sumber_asli">Lihat Sumber Asli</string>
+    <string name="masuk_dengan_google">Masuk dengan Google</string>
+    <string name="estimasi_harga">Estimasi Harga</string>
+    <string name="rp_0">Rp 0</string>
+    <string name="ambil_foto_atau_pilih_dari_galeri">Ambil foto atau pilih dari galeri</string>
+    <string name="terdeteksi">Terdeteksi: -</string>
+    <string name="_0">0</string>
+    <string name="_0_0_kg">0.0 kg</string>
+    <string name="cari_tps_di_area_ini">Cari TPS di Area Ini</string>
+    <string name="nama_tps_3r">Nama TPS 3R</string>
+    <string name="alamat_lengkap_lokasi">Alamat lengkap lokasi…</string>
+    <string name="terima_sampah">Terima Sampah:</string>
+    <string name="plastik_kertas">Plastik, Kertas</string>
+    <string name="jam_buka">Jam Buka:</string>
+    <string name="_08_00_16_00">08:00 – 16:00</string>
+    <string name="rute_ke_lokasi">Rute ke Lokasi</string>
+    <string name="judul_artikel_planetku">Judul Artikel PlanetKu</string>
+    <string name="ini_adalah_ringkasan_singkat_dari_artikel">Ini adalah ringkasan singkat dari artikel…</string>
+    <string name="_12_feb_2026">12 Feb 2026</string>
+    <string name="total_estimasi_emisi">Total Estimasi Emisi</string>
+    <string name="_0_0_kg_co2">0.0 kg CO2</string>
+    <string name="status">Status</string>
+    <string name="pesan_status_akan_muncul_di_sini">Pesan status akan muncul di sini.</string>
+    <string name="pengaturan_akun">Pengaturan Akun</string>
 </resources>

@@ -51,7 +51,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Total Estimasi Emisi"
+                    android:text="@string/total_estimasi_emisi"
                     android:textColor="@color/outline"
                     android:textSize="14sp" />
 
@@ -59,7 +59,7 @@
                     android:id="@+id/tvTotalValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.0 kg CO2"
+                    android:text="@string/_0_0_kg_co2"
                     android:textColor="@color/primary"
                     android:textSize="32sp"
                     android:textStyle="bold"
@@ -104,7 +104,7 @@
                         android:id="@+id/tvStatusLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Status"
+                        android:text="@string/status"
                         android:textStyle="bold"
                         android:textSize="14sp" />
 
@@ -112,7 +112,7 @@
                         android:id="@+id/tvStatusMessage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pesan status akan muncul di sini."
+                        android:text="@string/pesan_status_akan_muncul_di_sini"
                         android:textSize="12sp"
                         android:textColor="@color/outline" />
                 </LinearLayout>
@@ -140,7 +140,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Input Aktivitas"
+                    android:text="@string/input_aktivitas"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/onSurface"
@@ -150,7 +150,7 @@
                     android:id="@+id/tilElectricity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Penggunaan Listrik (kWh)"
+                    android:hint="@string/penggunaan_listrik_kwh"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginBottom="12dp">
                     <com.google.android.material.textfield.TextInputEditText
@@ -164,7 +164,7 @@
                     android:id="@+id/tilTransport"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Jarak Transportasi (km)"
+                    android:hint="@string/jarak_transportasi_km"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginBottom="12dp">
                     <com.google.android.material.textfield.TextInputEditText
@@ -178,7 +178,7 @@
                     android:id="@+id/tilOrganic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Sampah Organik (kg)"
+                    android:hint="@string/sampah_organik_kg"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginBottom="12dp">
                     <com.google.android.material.textfield.TextInputEditText
@@ -192,7 +192,7 @@
                     android:id="@+id/tilInorganic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Sampah Anorganik (kg)"
+                    android:hint="@string/sampah_anorganik_kg"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginBottom="24dp">
                     <com.google.android.material.textfield.TextInputEditText
@@ -206,7 +206,7 @@
                     android:id="@+id/btnCalculate"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Hitung Emisi"
+                    android:text="@string/hitung_emisi"
                     android:backgroundTint="@color/primary"
                     android:textColor="@color/white"
                     app:cornerRadius="12dp" />

@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Cari TPS di Area Ini"
+        android:text="@string/cari_tps_di_area_ini"
         app:icon="@drawable/ic_map"
         app:cornerRadius="28dp"
         app:elevation="4dp"
@@ -62,7 +62,7 @@
                 android:id="@+id/tvPlaceName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nama TPS 3R"
+                android:text="@string/nama_tps_3r"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/onSurface"/>
@@ -71,7 +71,7 @@
                 android:id="@+id/tvPlaceAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alamat lengkap lokasi..."
+                android:text="@string/alamat_lengkap_lokasi"
                 android:textSize="14sp"
                 android:textColor="@color/outline"
                 android:layout_marginTop="4dp"/>
@@ -91,7 +91,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Terima Sampah:"
+                    android:text="@string/terima_sampah"
                     android:textColor="@color/outline"
                     android:textSize="12sp" />
 
@@ -100,7 +100,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="2"
                     android:layout_height="wrap_content"
-                    android:text="Plastik, Kertas"
+                    android:text="@string/plastik_kertas"
                     android:textStyle="bold"
                     android:textSize="12sp"
                     android:textColor="@color/primary"/>
@@ -116,7 +116,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Jam Buka:"
+                    android:text="@string/jam_buka"
                     android:textColor="@color/outline"
                     android:textSize="12sp" />
 
@@ -125,7 +125,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="2"
                     android:layout_height="wrap_content"
-                    android:text="08:00 - 16:00"
+                    android:text="@string/_08_00_16_00"
                     android:textStyle="bold"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -134,7 +134,7 @@
                 android:id="@+id/btnNavigate"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Rute ke Lokasi"
+                android:text="@string/rute_ke_lokasi"
                 android:layout_marginTop="20dp"
                 app:icon="@drawable/ic_map"
                 app:cornerRadius="16dp" />

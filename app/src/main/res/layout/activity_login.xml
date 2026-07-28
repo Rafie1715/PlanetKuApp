@@ -136,7 +136,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
-        android:text="Masuk dengan Google"
+        android:text="@string/masuk_dengan_google"
         android:textAllCaps="false"
         android:textSize="16sp"
         android:textStyle="bold"
