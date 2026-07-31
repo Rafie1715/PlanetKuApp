@@ -197,4 +197,6 @@
     <string name="status">Status</string>
     <string name="pesan_status_akan_muncul_di_sini">Pesan status akan muncul di sini.</string>
     <string name="pengaturan_akun">Pengaturan Akun</string>
+    <string name="mode_gelap">Mode Gelap</string>
+    <string name="aktifkan_untuk_tampilan_gelap">Aktifkan untuk tampilan gelap</string>
 </resources>

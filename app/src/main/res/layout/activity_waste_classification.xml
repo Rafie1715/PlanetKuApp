@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="?android:attr/windowBackground"
     tools:context=".ui.classification.WasteClassificationActivity">
 
     <TextView
@@ -87,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:text="@string/terdeteksi"
-                android:textColor="@color/onSurface"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -113,6 +114,8 @@
             android:layout_marginEnd="8dp"
             android:text="@string/kamera"
             app:icon="@drawable/baseline_camera_alt_24"
+            app:iconTint="?attr/colorPrimary"
+            android:textColor="?attr/colorPrimary"
             app:cornerRadius="16dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -124,6 +127,8 @@
             android:layout_marginStart="8dp"
             android:text="@string/galeri"
             app:icon="@drawable/ic_image"
+            app:iconTint="?attr/colorPrimary"
+            android:textColor="?attr/colorPrimary"
             app:cornerRadius="16dp" />
     </LinearLayout>
 

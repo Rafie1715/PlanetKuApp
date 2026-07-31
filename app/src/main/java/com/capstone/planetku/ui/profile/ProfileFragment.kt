@@ -17,6 +17,8 @@ import java.util.Locale
 import com.bumptech.glide.Glide
 import java.io.File
 
+import com.capstone.planetku.utils.ThemeHelper
+
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
@@ -36,11 +38,25 @@ class ProfileFragment : Fragment() {
 
         setupUserProfile()
         setupActions()
+        setupThemeSwitch()
     }
 
     override fun onResume() {
         super.onResume()
         setupUserProfile()
+    }
+
+    private fun setupThemeSwitch() {
+        val isDark = ThemeHelper.isDarkMode(requireContext())
+        binding.switchDarkMode.isChecked = isDark
+        
+        binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            ThemeHelper.setDarkMode(requireContext(), isChecked)
+        }
+
+        binding.layoutDarkMode.setOnClickListener {
+            binding.switchDarkMode.isChecked = !binding.switchDarkMode.isChecked
+        }
     }
 
     private fun setupUserProfile() {

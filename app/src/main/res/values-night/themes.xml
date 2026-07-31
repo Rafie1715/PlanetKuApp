@@ -1,18 +1,19 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Theme.PlanetKuApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/onPrimary</item>
-        <item name="colorPrimaryContainer">@color/primaryContainer</item>
+        <item name="colorPrimary">@color/green_light</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryContainer">#1B4332</item>
 
-        <item name="colorSecondary">@color/secondary</item>
-        <item name="colorSecondaryContainer">@color/secondaryContainer</item>
+        <item name="colorSecondary">@color/tertiary</item>
+        <item name="colorSecondaryContainer">#2D6A4F</item>
 
         <item name="android:windowBackground">@color/black</item>
         <item name="colorSurface">@color/black</item>
         <item name="colorOnSurface">@color/white</item>
-        <item name="colorSurfaceVariant">@color/green_dark</item>
-
+        <item name="colorSurfaceVariant">#1E1E1E</item>
+        <item name="colorOnSurfaceVariant">#D0D0D0</item>
+        <item name="android:textColorHint">#808080</item>
         <item name="android:statusBarColor">@color/black</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:windowLightStatusBar" >false</item>
     </style>
 </resources>

@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".PlanetKuApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -49,7 +50,7 @@
         <activity
             android:name=".ui.carbonemission.CarbonEmissionActivity"
             android:label="Emisi Karbon"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+            android:theme="@style/Theme.PlanetKuApp" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"
@@ -60,7 +61,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.PlanetKuApp"/>
         <activity
             android:name=".ui.LoginRegisterActivity"
             android:exported="false"
